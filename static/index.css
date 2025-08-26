@@ -1,0 +1,191 @@
+/* ==============================
+   Reset & tokens
+============================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root{
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --text: #2b2b2b;
+  --muted: #666;
+  --brand: #2c3e50;      /* cabeçalho */
+  --brand-2: #3498db;    /* botões/links */
+  --brand-2-hover:#2980b9;
+  --border: #e7e9ee;
+  --code-bg: #1f2430;
+  --code-border:#323a4a;
+  --shadow: 0 10px 25px rgba(0,0,0,.08);
+  --radius: 12px;
+}
+
+/* Dark mode automático */
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1217;
+    --card:#131823;
+    --text:#e7ecf6;
+    --muted:#9aa5b1;
+    --brand:#111827;
+    --brand-2:#4da3ff;
+    --brand-2-hover:#2e84e6;
+    --border:#1f2532;
+    --code-bg:#0b0e14;
+    --code-border:#1a2130;
+    --shadow: 0 10px 25px rgba(0,0,0,.35);
+  }
+}
+
+/* ==============================
+   Base
+============================== */
+html, body { height: 100%; }
+body{
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  padding: 20px;
+}
+
+/* ==============================
+   Header / Nav
+============================== */
+header{
+  background: linear-gradient(135deg, var(--brand) 0%, #1d2a38 100%);
+  color: #fff;
+  padding: 24px 16px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin: 0 auto 20px;
+  max-width: 1100px;
+}
+header h1{ font-size: clamp(1.4rem, 1.2rem + 1.2vw, 2.2rem); margin-bottom: 8px; }
+
+nav ul{ list-style: none; display: flex; gap: 18px; flex-wrap: wrap; }
+nav a{
+  color: #ffffffd9;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background .2s ease, color .2s ease;
+}
+nav a:hover{ background: #ffffff22; color: #fff; }
+
+/* ==============================
+   Main card
+============================== */
+main{
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+
+/* Grid */
+.grid-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-bottom: 26px;
+}
+@media (max-width: 900px){
+  .grid-container{ grid-template-columns: 1fr; }
+}
+
+/* Input box */
+.user-input-box h2{ font-size: 1.1rem; margin-bottom: 10px; }
+#user-input{
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+#user-input:focus{
+  border-color: var(--brand-2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-2) 20%, transparent);
+}
+button{
+  margin-top: 10px;
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: var(--brand-2);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .04s ease, background .15s ease, box-shadow .15s ease;
+  box-shadow: 0 6px 16px rgba(52, 152, 219, .25);
+}
+button:hover{ background: var(--brand-2-hover); }
+button:active{ transform: translateY(1px); }
+button:disabled{ opacity: .65; cursor: not-allowed; box-shadow: none; }
+
+/* Agent feedback */
+.agent-message-box .agent-box{
+  background: color-mix(in srgb, var(--brand-2) 8%, var(--card));
+  border: 1px dashed color-mix(in srgb, var(--brand-2) 35%, var(--border));
+  border-radius: 10px;
+  padding: 14px;
+  min-height: 140px;
+  color: var(--muted);
+  overflow-y: auto;
+}
+
+/* Código gerado */
+.code-output-box h2{ font-size: 1.1rem; margin-bottom: 10px; }
+#generated-code{
+  display: block;
+  width: 100%;
+  background: var(--code-bg);
+  color: #e9eef7;
+  border: 1px solid var(--code-border);
+  border-radius: 12px;
+  padding: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: .95rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+}
+
+/* Botões do código */
+.code-buttons{
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+.code-buttons button{
+  width: auto;
+  min-width: 140px;
+}
+
+/* Footer */
+footer{
+  max-width: 1100px;
+  margin: 20px auto 0;
+  text-align: center;
+  color: var(--muted);
+  background: var(--brand);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+footer p{ font-size: .95rem; }
+
+/* Acessibilidade leve */
+:focus-visible{ outline: 3px solid color-mix(in srgb, var(--brand-2) 60%, transparent); outline-offset: 2px; }

@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESP32 Code Generator</title>
+  <link rel="stylesheet" href="{% static 'index.css' %}">
+</head>
+<body>
+  <header>
+    <h1>ESP32 Code Generator</h1>
+    <nav>
+      <ul>
+        <li><a href="#home">Início</a></li>
+        <li><a href="#about">Sobre o Projeto</a></li>
+        <li><a href="#docs">Documentação</a></li>
+        <li><a href="#contact">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="grid-container">
+      <div class="user-input-box">
+        <h2>Descreva o que deseja fazer com o ESP32</h2>
+        <textarea id="user-input" placeholder="Ex: Acender um LED no GPIO 2..."></textarea>
+        <button id="generate-code">Gerar Código</button>
+      </div>
+
+      <div class="agent-message-box">
+        <div id="agent-feedback" class="agent-box"></div>
+      </div>
+    </div>
+
+    <section class="code-output-box">
+      <h2>Código Gerado</h2>
+      <pre><code id="generated-code"></code></pre>
+      <div class="code-buttons">
+        <button id="copy-code">Copiar</button>
+        <button id="send-ota">Enviar OTA</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Projeto desenvolvido por Lucas do Nascimento Silva - PIBITI/UFAM</p>
+  </footer>
+
+  <script src="{% static 'script.js' %}"></script>
+</body>
+</html>
+    

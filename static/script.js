@@ -70,12 +70,10 @@ function onCopy(){
   });
 }
 
-// ===== boot
 window.addEventListener("DOMContentLoaded", () => {
   $("generate-code")?.addEventListener("click", onGenerateClick);
   $("send-ota")?.addEventListener("click", onSendOTA);
   $("copy-code")?.addEventListener("click", onCopy);
 
-  // inicia a conversa automaticamente
   startInterview();
 });

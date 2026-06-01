@@ -1,0 +1,294 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Assist</title>
+    <meta name="description" content="Descreva sua ideia - a IA cuida do codigo">
+
+    <!-- Tailwind CSS Configuration Script -->
+    <!-- Este script DEVE vir antes do CDN do Tailwind para que a configuração seja aplicada -->
+    <script type="tailwind-config">
+        tailwind.config = {
+            darkMode: 'class', // Habilita o modo escuro baseado na classe 'dark' no elemento html
+            theme: {
+                extend: {
+                    colors: {
+                        border: "var(--border)",
+                        input: "var(--input)",
+                        ring: "var(--ring)",
+                        background: "var(--background)",
+                        foreground: "var(--foreground)",
+                        primary: {
+                            DEFAULT: "var(--primary)",
+                            foreground: "var(--primary-foreground)",
+                        },
+                        secondary: {
+                            DEFAULT: "var(--secondary)",
+                            foreground: "var(--secondary-foreground)",
+                        },
+                        destructive: {
+                            DEFAULT: "var(--destructive)",
+                            foreground: "var(--destructive-foreground)",
+                        },
+                        muted: {
+                            DEFAULT: "var(--muted)",
+                            foreground: "var(--muted-foreground)",
+                        },
+                        accent: {
+                            DEFAULT: "var(--accent)",
+                            foreground: "var(--accent-foreground)",
+                        },
+                        popover: {
+                            DEFAULT: "var(--popover)",
+                            foreground: "var(--popover-foreground)",
+                        },
+                        card: {
+                            DEFAULT: "var(--card)",
+                            foreground: "var(--card-foreground)",
+                        },
+                        "chart-1": "var(--chart-1)",
+                        "chart-2": "var(--chart-2)",
+                        "chart-3": "var(--chart-3)",
+                        "chart-4": "var(--chart-4)",
+                        "chart-5": "var(--chart-5)",
+                        "sidebar": {
+                            DEFAULT: "var(--sidebar)",
+                            foreground: "var(--sidebar-foreground)",
+                            primary: {
+                                DEFAULT: "var(--sidebar-primary)",
+                                foreground: "var(--sidebar-primary-foreground)",
+                            },
+                            accent: {
+                                DEFAULT: "var(--sidebar-accent)",
+                                foreground: "var(--sidebar-accent-foreground)",
+                            },
+                            border: "var(--sidebar-border)",
+                            ring: "var(--sidebar-ring)",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                        xl: "calc(var(--radius) + 4px)",
+                        "2xl": "calc(var(--radius) + 8px)",
+                        "3xl": "calc(var(--radius) + 12px)",
+                        "4xl": "calc(var(--radius) + 16px)",
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Tailwind CSS CDN for quick setup -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom CSS variables for theming */
+        /* Estas variáveis são usadas pela configuração do Tailwind acima */
+        :root {
+            --radius: 0.75rem;
+            --background: oklch(0.985 0.01 180); /* Fundo geral muito claro */
+            --foreground: oklch(0.20 0.04 200); /* Texto escuro */
+            --card: oklch(1 0 0); /* Card branco */
+            --card-foreground: oklch(0.20 0.04 200);
+            --popover: oklch(1 0 0);
+            --popover-foreground: oklch(0.20 0.04 200);
+            --primary: oklch(0.62 0.13 190);
+            --primary-foreground: oklch(0.99 0 0);
+            --secondary: oklch(0.94 0.03 190);
+            --secondary-foreground: oklch(0.25 0.05 200);
+            --muted: oklch(0.95 0.015 190); /* Azul muito claro para áreas "silenciosas" */
+            --muted-foreground: oklch(0.48 0.03 200);
+            --accent: oklch(0.85 0.10 170);
+            --accent-foreground: oklch(0.20 0.04 200);
+            --destructive: oklch(0.6 0.22 27);
+            --destructive-foreground: oklch(0.99 0 0);
+            --border: oklch(0.88 0.02 190);
+            --input: oklch(0.88 0.02 190);
+            --ring: oklch(0.62 0.13 190);
+            --chart-1: oklch(0.62 0.13 190);
+            --chart-2: oklch(0.7 0.15 160);
+            --chart-3: oklch(0.55 0.18 220);
+            --chart-4: oklch(0.75 0.16 90);
+            --chart-5: oklch(0.65 0.2 30);
+            --sidebar: oklch(0.97 0.015 190);
+            --sidebar-foreground: oklch(0.20 0.04 200);
+            --sidebar-primary: oklch(0.62 0.13 190);
+            --sidebar-primary-foreground: oklch(0.99 0 0);
+            --sidebar-accent: oklch(0.94 0.03 190);
+            --sidebar-accent-foreground: oklch(0.25 0.05 200);
+            --sidebar-border: oklch(0.88 0.02 190);
+            --sidebar-ring: oklch(0.62 0.13 190);
+        }
+
+        .dark {
+            --background: oklch(0.129 0.042 264.695);
+            --foreground: oklch(0.984 0.003 247.858);
+            --card: oklch(0.208 0.042 265.755);
+            --card-foreground: oklch(0.984 0.003 247.858);
+            --popover: oklch(0.208 0.042 265.755);
+            --popover-foreground: oklch(0.984 0.003 247.858);
+            --primary: oklch(0.929 0.013 255.508);
+            --primary-foreground: oklch(0.208 0.042 265.755);
+            --secondary: oklch(0.279 0.041 260.031);
+            --secondary-foreground: oklch(0.984 0.003 247.858);
+            --muted: oklch(0.279 0.041 260.031);
+            --muted-foreground: oklch(0.704 0.04 256.788);
+            --accent: oklch(0.279 0.041 260.031);
+            --accent-foreground: oklch(0.984 0.003 247.858);
+            --destructive: oklch(0.704 0.191 22.216);
+            --destructive-foreground: oklch(0.984 0.003 247.858);
+            --border: oklch(1 0 0 / 10%);
+            --input: oklch(1 0 0 / 15%);
+            --ring: oklch(0.551 0.027 264.364);
+            --chart-1: oklch(0.488 0.243 264.376);
+            --chart-2: oklch(0.696 0.17 162.48);
+            --chart-3: oklch(0.769 0.188 70.08);
+            --chart-4: oklch(0.627 0.265 303.9);
+            --chart-5: oklch(0.645 0.246 16.439);
+            --sidebar: oklch(0.208 0.042 265.755);
+            --sidebar-foreground: oklch(0.984 0.003 247.858);
+            --sidebar-primary: oklch(0.488 0.243 264.376);
+            --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+            --sidebar-accent: oklch(0.279 0.041 260.031);
+            --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+            --sidebar-border: oklch(1 0 0 / 10%);
+            --sidebar-ring: oklch(0.551 0.027 264.364);
+        }
+
+        @layer base {
+            * {
+                border-color: var(--border);
+            }
+
+            body {
+                background-color: var(--background);
+                color: var(--foreground);
+            }
+        }
+    </style>
+</head>
+<body> <!-- Removed dark class for initial dark theme, will be toggled with JS -->
+    <div class="min-h-screen bg-background text-foreground">
+        <header class="border-b border-border bg-card/80 backdrop-blur sticky top-0 z-10">
+            <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-primary text-primary-foreground grid place-items-center shadow-sm">
+                        <!-- Icone Cpu -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cpu h-5 w-5"><rect x="2" y="2" width="20" height="20" rx="2"/><rect x="8" y="8" width="8" height="8"/><line x1="12" x2="12" y1="2" y2="8"/><line x1="12" x2="12" y1="16" y2="22"/><line x1="2" x2="8" y1="12" y2="12"/><line x1="16" x2="22" y1="12" y2="12"/></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold leading-tight">ESP32 Assist</h1>
+                        <p class="text-xs text-muted-foreground">Converse. Refine. Gere firmware.</p>
+                    </div>
+                </div>
+                <button
+                    id="theme-toggle"
+                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10 rounded-full"
+                    aria-label="Alternar tema"
+                >
+                    <!-- Icone Sun/Moon - placeholder, será atualizado pelo JS -->
+                    <svg id="theme-icon-sun" class="h-4 w-4 hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>
+                    <svg id="theme-icon-moon" class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="max-w-6xl mx-auto px-6 py-8 space-y-6">
+            <section class="rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-accent/20 to-transparent p-6">
+                <div class="flex items-center gap-2 text-primary font-medium text-sm">
+                    <!-- Icone Sparkles -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-4 w-4"><path d="M9.93 18.53A8 8 0 0 0 12 22c2.21 0 4-1.79 4-4a4 4 0 0 0-1.07-2.57"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M20 12h2"/><path d="M2 12h2"/><path d="M17.66 17.66l1.41 1.41"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 6.34l1.41-1.41"/><path d="M4.93 19.07l1.41-1.41"/><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
+                    Assistente de firmware
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold mt-2">Descreva sua ideia — a IA cuida do código</h2>
+                <p class="text-muted-foreground mt-1 text-sm md:text-base">
+                    Descreva sua lógica de controle e comunicação. Nosso assistente traduzirá seus requisitos em C++ otimizado, iterando sobre configurações de GPIOs e bibliotecas até o firmware final.
+                </p>
+            </section>
+
+            <div class="grid gap-6 md:grid-cols-2">
+                <!-- INPUT -->
+                <section class="rounded-2xl border border-border bg-card p-5 flex flex-col shadow-sm">
+                    <div class="flex items-center gap-2 mb-1">
+                        <!-- Icone MessageSquare -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square h-4 w-4 text-primary"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <h3 class="font-semibold">Sua mensagem</h3>
+                    </div>
+                    <p class="text-xs text-muted-foreground mb-3">
+                        Aqui é onde <span class="font-medium text-foreground">você escreve</span>. Pode ser uma ideia, uma resposta a uma pergunta da IA ou um pedido de ajuste.
+                    </p>
+                    <form id="chat-form" class="flex flex-col flex-1">
+                        {% csrf_token %} <!-- Django CSRF token -->
+                        <textarea
+                            id="chat-input"
+                            placeholder="Ex: quero ler temperatura de um DHT22 no GPIO 4 e enviar pra um servidor MQTT…"
+                            class="flex-1 min-h-[200px] resize-none bg-background flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        ></textarea>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-xs text-muted-foreground">⌘/Ctrl + Enter para enviar</span>
+                            <button id="send-button" type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                                <!-- Icone Send -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send h-4 w-4"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                                Enviar
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- CHAT -->
+                <section class="rounded-2xl border border-border bg-card p-5 flex flex-col shadow-sm">
+                    <div class="flex items-center gap-2 mb-1">
+                        <!-- Icone Bot -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot h-4 w-4 text-primary"><path d="M12 8V4H8"/><path d="M22 7.26V14L12 22 2 14V7.26l10-6"/><path d="m2 7 10 6 10-6"/><path d="M12 22V14"/><path d="M8 18H4"/><path d="M16 18h4"/></svg>
+                        <h3 class="font-semibold">Resposta da IA</h3>
+                    </div>
+                    <p class="text-xs text-muted-foreground mb-3">
+                        Aqui aparecem as <span class="font-medium text-foreground">perguntas e explicações</span> da IA. Responda do lado para refinar até gerar o código.
+                    </p>
+                    <div id="chat-messages" class="flex-1 min-h-[200px] max-h-[420px] overflow-y-auto rounded-lg bg-muted/40 p-4 space-y-4">
+                        <div id="initial-chat-message" class="text-sm text-muted-foreground text-center py-10">
+                            <!-- Icone Bot -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot h-8 w-8 mx-auto mb-2 opacity-50"><path d="M12 8V4H8"/><path d="M22 7.26V14L12 22 2 14V7.26l10-6"/><path d="m2 7 10 6 10-6"/><path d="M12 22V14"/><path d="M8 18H4"/><path d="M16 18h4"/></svg>
+                            Nenhuma conversa ainda. Comece descrevendo seu projeto ao lado.
+                        </div>
+                        <!-- Mensagens do chat seriam inseridas aqui via JS -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- CODE -->
+            <section class="rounded-2xl border border-border bg-card p-5 shadow-sm">
+                <div class="flex items-center justify-between flex-wrap gap-3 mb-1">
+                    <div class="flex items-center gap-2">
+                        <!-- Icone Code2 -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-code-2 h-4 w-4 text-primary"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+                        <h3 class="font-semibold">Código gerado</h3>
+                    </div>
+                    <button id="copy-button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-3">
+                        <!-- Icone Copy -->
+                        <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy h-4 w-4 mr-2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        <svg id="check-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-4 w-4 mr-2 hidden"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span id="copy-text">Copiar</span>
+                    </button>
+                </div>
+                <p class="text-xs text-muted-foreground mb-3">
+                    Sketch C++ <span class="font-medium text-foreground">pronto para colar no Arduino IDE</span>. Atualiza automaticamente quando a IA gera o código novo.
+                </p>
+                <pre id="generated-code" class="bg-slate-950 text-slate-100 rounded-lg p-4 min-h-[160px] max-h-[500px] overflow-auto text-xs font-mono whitespace-pre">
+// Aguardando o código… converse com a IA do lado para gerar seu firmware.
+                </pre>
+            </section>
+        </main>
+
+        <footer class="border-t border-border mt-8 py-4 text-center text-xs text-muted-foreground">
+            Projeto desenvolvido por Lucas do Nascimento Silva — UFAM
+        </footer>
+    </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

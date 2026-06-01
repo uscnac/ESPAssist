@@ -18,7 +18,7 @@ O **ESP32 Assist** é uma ferramenta inovadora que utiliza Inteligência Artific
 O projeto é composto por um backend Django e um frontend simples baseado em HTML, Tailwind CSS e JavaScript.
 
 ```
-ProjetoPibiti/
+Projeto/
 ├── .env                      # Variáveis de ambiente (ex: OPENAI_API_KEY)
 ├── ESPAssist/                # Diretório principal do projeto Django
 │   ├── ESPAssist/            # Configurações do projeto Django (settings.py, urls.py, wsgi.py)
@@ -116,8 +116,8 @@ O frontend é uma Single Page Application (SPA) construída com:
 
 1.  **Clone o repositório:**
     ```bash
-    git clone <URL_DO_SEU_REPOSITORIO>
-    cd ProjetoPibiti
+    git clone <URL>
+    cd ESPAssist
     ```
 
 2.  **Crie e ative um ambiente virtual:**
@@ -135,7 +135,7 @@ O frontend é uma Single Page Application (SPA) construída com:
     *(Se você não tiver um `requirements.txt`, instale `Django` e `openai` manualmente: `pip install Django openai`)*
 
 4.  **Configure as variáveis de ambiente:**
-    Crie um arquivo `.env` na raiz do projeto (`ProjetoPibiti/.env`) e adicione sua chave da OpenAI (se for usar o modelo completo):
+    Crie um arquivo `.env` na raiz do projeto (`ESPAssist/.env`) e adicione sua chave da OpenAI (se for usar o modelo completo):
     ```
     OPENAI_API_KEY='sua_chave_da_openai_aqui'
     # Opcional: para sobrescrever o prompt do sistema do arquivo
@@ -159,7 +159,6 @@ O frontend é uma Single Page Application (SPA) construída com:
 
 ## Observações
 
-*   O projeto `assistesp32` no diretório raiz é uma referência de design e não faz parte da aplicação Django em execução.
 *   A funcionalidade OTA (`/api/ota`) é um *stub* e precisa ser implementada para ter funcionalidade real.
 *   A IA é configurada para um fluxo de entrevista. Respostas diretas sem seguir o fluxo podem não ser processadas como esperado até que todos os passos da entrevista sejam concluídos.
 *   O tema da interface é salvo no `localStorage` do navegador.

@@ -38,4 +38,3 @@ Ao gerar o código final (Passo 10), o assistente DEVE seguir rigorosamente as s
 4. Otimização de Interface e Periféricos:
 - Ao escrever em displays (LCD ou OLED), o código deve ser otimizado para evitar o efeito de oscilação visual ("flicker"). Evite comandos de limpeza total de tela (`lcd.clear()`) dentro de loops de alta frequência; prefira sobrescrever apenas os caracteres necessários posicionando o cursor.
 - Não sature o monitor Serial com mensagens repetitivas em alta velocidade (flooding), a menos que estritamente necessário para depuração rápida.
-

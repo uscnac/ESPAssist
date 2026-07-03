@@ -1,14 +1,13 @@
 import os
 from django.conf import settings
-
+from pathlib import Path
 # Descobre BASE_DIR de forma segura
 try:
-    BASE_DIR = settings.BASE_DIR
+    PROJECT_ROOT = settings.BASE_DIR.parent
 except Exception:
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    PROJECT_ROOT = Path(os.path.abspath(__file__)).parent.parent.parent
 
-PROMPT_PATH = os.path.join(BASE_DIR, "prompts", "esp32_agent.md")
-
+PROMPT_PATH = os.path.join(PROJECT_ROOT, "prompts", "esp32_agent.md")
 
 def _load_system_prompt() -> str:
     """Carrega o prompt do agente (prioriza variável de ambiente)."""
@@ -22,6 +21,8 @@ def _load_system_prompt() -> str:
             if text:
                 return text
     except FileNotFoundError:
+        # Adicione um print para depurar se o arquivo não for encontrado
+        print(f"WARN: Arquivo de prompt não encontrado em: {PROMPT_PATH}")
         pass
 
     # Fallback mínimo se nada for encontrado
@@ -41,24 +42,21 @@ def generate_esp32_code(prompt: str) -> tuple[str, str]:
 
     if api_key:
         try:
-            # openai>=1.0
             from openai import OpenAI
             client = OpenAI(api_key=api_key)
 
-            # Uso do campo 'input' em formato de mensagens (system + user)
+            user_content = (
+                "Gere um sketch ESP32 (Arduino/C++) para o seguinte briefing:\n"
+                f"{prompt}\n"
+                "Requisitos: incluir setup() e loop(), comentários curtos; "
+                "retornar APENAS o código (sem markdown)."
+            )
+
             rsp = client.responses.create(
                 model=model,
                 input=[
                     {"role": "system", "content": system},
-                    {
-                        "role": "user",
-                        "content": (
-                            "Gere um sketch ESP32 (Arduino/C++) para o seguinte briefing:\n"
-                            f"{prompt}\n"
-                            "Requisitos: incluir setup() e loop(), comentários curtos; "
-                            "retornar APENAS o código (sem markdown)."
-                        ),
-                    },
+                    {"role": "user", "content": user_content},
                 ],
                 temperature=0.2,
             )
@@ -66,6 +64,7 @@ def generate_esp32_code(prompt: str) -> tuple[str, str]:
             return text.strip(), "Código gerado com OpenAI."
         except Exception as e:
             return _fallback_generator(prompt), f"Fallback local (erro ao chamar modelo): {e}"
+
 
     # Sem chave: fallback
     return _fallback_generator(prompt), "Fallback local (sem OPENAI_API_KEY)."

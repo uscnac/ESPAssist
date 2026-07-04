@@ -1,2 +1,4 @@
 Django
 openai
+python-dotenv
+gunicorn

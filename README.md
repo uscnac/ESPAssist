@@ -20,24 +20,22 @@ O projeto é composto por um backend Django e um frontend simples baseado em HTM
 ```
 Projeto/
 ├── .env                      # Variáveis de ambiente (ex: OPENAI_API_KEY)
-├── ESPAssist/                # Diretório principal do projeto Django
-│   ├── ESPAssist/            # Configurações do projeto Django (settings.py, urls.py, wsgi.py)
-│   └── manage.py             # Utilitário de linha de comando do Django
+├── ESPAssist/                # Configurações do projeto Django (settings.py, urls.py, wsgi.py)
 ├── ESPAssists/               # Aplicativo Django principal
 │   ├── migrations/           # Migrações do banco de dados
 │   ├── services/             # Lógica de integração com a IA (generator.py)
-│   ├── static/               # Arquivos estáticos específicos do app (se houver)
-│   ├── templates/            # Templates específicos do app (se houver)
+│   ├── static/               # Arquivos estáticos específicos do app 
+│   ├── templates/            # Templates específicos do app
 │   ├── admin.py              # Configurações de administração do Django
 │   ├── apps.py               # Configurações do aplicativo
 │   ├── models.py             # Modelos de banco de dados (Entry)
 │   ├── urls.py               # Padrões de URL do aplicativo
 │   └── views.py              # Lógica de views e interação com a IA
 ├── db.sqlite3                # Banco de dados SQLite (padrão do Django)
-├── prompts/                  # Definições de prompts para a IA
+├── prompts/                  
 │   └── esp32_agent.md        # Prompt do sistema para o agente ESP32
 ├── static/                   # Arquivos estáticos globais (CSS, JavaScript)
-│   ├── index.css             # (Não utilizado diretamente, mas pode conter estilos globais)
+│   ├── index.css             
 │   └── script.js             # Lógica JavaScript do frontend
 ├── templates/                # Templates HTML globais
 │   └── index.html            # Página principal da aplicação

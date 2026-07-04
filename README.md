@@ -37,7 +37,7 @@ Projeto/
 ├── static/                   # Arquivos estáticos globais (CSS, JavaScript)
 │   ├── index.css             
 │   └── script.js             # Lógica JavaScript do frontend
-├── templates/                # Templates HTML globais
+├── templates/                
 │   └── index.html            # Página principal da aplicação
 └── README.md                 # Este arquivo
 ```

@@ -11,7 +11,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 # ====== ENTREVISTA (conversa) ======
 INTERVIEW_STEPS = [
-    ("objetivo",       "O que você deseja que seu ESP32 faça?"),
+    ("objetivo",       "O que você deseja que seu ESP32 faça? "),
     ("sensores",       "Quais sensores ou módulos serão usados? (ex: DHT11, MPU6050, HC-SR04 etc.)"),
     ("atuadores",      "Seu projeto precisa ativar algo? (ex: LED, motor, relé)"),
     ("pinos",          "Quais pinos do ESP32 você quer utilizar? Ou deseja que eu sugira?"),

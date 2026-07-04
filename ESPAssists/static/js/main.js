@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Chat Functionality ---
-    function addMessageToChat(message, isUser) {
+    function addMessageToChat(message, isUser, isTemporary = false) {
         if (initialChatMessage) {
             initialChatMessage.remove();
             initialChatMessage = null; // Clear reference after removal
@@ -49,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const messageDiv = document.createElement('div');
         messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+        if (isTemporary) {
+            messageDiv.classList.add('temporary-message'); // Add a class to identify temporary messages
+        }
 
         const contentDiv = document.createElement('div');
         contentDiv.className = `max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
@@ -60,12 +63,22 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.appendChild(contentDiv);
         chatMessagesContainer.appendChild(messageDiv);
         chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight; // Scroll to bottom
+        return messageDiv; // Return the message element for potential removal
+    }
+
+    function removeTemporaryMessages() {
+        const temporaryMessages = document.querySelectorAll('.temporary-message');
+        temporaryMessages.forEach(msg => msg.remove());
     }
 
     async function sendMessage(message) {
         addMessageToChat(message, true); // Display user message immediately
         chatInput.value = '';
         sendButton.disabled = true; // Disable button while loading
+
+        // Add a loading message
+        const loadingMessageElement = addMessageToChat("Gerando código...", false, true);
+        generatedCodePre.textContent = "// Gerando código..."; // Clear previous code and show loading
 
         try {
             const response = await fetch('/api/agent/next', {
@@ -83,6 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
+            removeTemporaryMessages(); // Remove loading message before adding actual response
+
             if (data.done) {
                 addMessageToChat(data.feedback || "Código gerado!", false);
                 generatedCodePre.textContent = data.code;
@@ -91,7 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Erro ao enviar mensagem:', error);
+            removeTemporaryMessages(); // Ensure loading message is removed on error
             addMessageToChat("Desculpe, houve um erro ao processar sua solicitação.", false);
+            generatedCodePre.textContent = "// Erro ao gerar código."; // Indicate error in code area
         } finally {
             sendButton.disabled = false; // Re-enable button
         }
@@ -118,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Copy Code Functionality ---
     copyButton.addEventListener('click', async () => {
         const code = generatedCodePre.textContent;
-        if (code && code !== "// Aguardando o código… converse com a IA do lado para gerar seu firmware.") {
+        if (code && code !== "// Aguardando o código… converse com a IA do lado para gerar seu firmware." && code !== "// Gerando código." && code !== "// Erro ao gerar código.") {
             try {
                 await navigator.clipboard.writeText(code);
                 copyIcon.classList.add('hidden');

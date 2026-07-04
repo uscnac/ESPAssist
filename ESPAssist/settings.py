@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ESPAssist.ESPAssist.urls' #
+ROOT_URLCONF = 'ESPAssist.urls' #
 
 TEMPLATES = [
     {
@@ -73,7 +73,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ESPAssist.ESPAssist.wsgi.application'
+WSGI_APPLICATION = 'ESPAssist.wsgi.application'
 
 
 # Database

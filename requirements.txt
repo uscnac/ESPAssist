@@ -2,3 +2,4 @@ Django
 openai
 python-dotenv
 gunicorn
+whitenoise

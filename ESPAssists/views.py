@@ -7,21 +7,190 @@ import json
 
 # ====== PÁGINA INICIAL ======
 def index(request: HttpRequest) -> HttpResponse:
-    return render(request, 'index.html')
+    _ensure_state(request)
+    return render(request, 'index.html', {})
 
 # ====== ENTREVISTA (conversa) ======
 INTERVIEW_STEPS = [
-    ("objetivo",       "O que você deseja que seu ESP32 faça? "),
-    ("sensores",       "Quais sensores ou módulos serão usados? (ex: DHT11, MPU6050, HC-SR04 etc.)"),
-    ("atuadores",      "Seu projeto precisa ativar algo? (ex: LED, motor, relé)"),
-    ("pinos",          "Quais pinos do ESP32 você quer utilizar? Ou deseja que eu sugira?"),
-    ("wifi",           "O ESP32 precisa de Wi-Fi? (Se sim, qual o SSID e a senha?)"),
-    ("bt",             "Precisa de Bluetooth?"),
-    ("remoto",         "Precisa enviar/receber dados remotamente?"),
-    ("logica",         "Como o código deve reagir às leituras dos sensores?"),
-    ("armazenamento",  "Precisa salvar informações? (EEPROM, SD Card, servidor)"),
-    ("frequencia",     "Com que frequência o ESP32 deve executar as tarefas?"),
-    ("visualizacao",   "Como você deseja ver os dados? (Serial, OLED, servidor, app)"),
+    (
+        "objetivo",
+        "O que você deseja que seu ESP32 faça? escreva o objetivo principal do projeto.",
+        "Ex: medir temperatura, controlar um LED, monitorar distância ou automatizar um sistema.",
+        """
+        <p>Descreva, de forma geral, qual problema o projeto deve resolver ou qual tarefa o ESP32 deverá executar.</p>
+        <p>Exemplos:</p>
+        <ul>
+            <li>Monitorar temperatura e umidade.</li>
+            <li>Detectar obstáculos.</li>
+            <li>Automatizar a irrigação de plantas.</li>
+            <li>Controlar a iluminação de um ambiente.</li>
+        </ul>
+        """
+    ),
+
+    (
+        "sensores",
+        "Quais sensores ou módulos serão utilizados?",
+        "Exemplos: DHT11, HC-SR04, MPU6050, OLED. ",
+        """
+        <p>Sensores coletam informações do ambiente, como temperatura, distância, umidade ou movimento.</p>
+        <p>Módulos adicionam funcionalidades ao ESP32, como displays, GPS ou leitores RFID.</p>
+        <p>Exemplos:</p>
+        <ul>
+            <li>🌡️ DHT11 — temperatura e umidade</li>
+            <li>📏 HC-SR04 — distância</li>
+            <li>📱 MPU6050 — acelerômetro e giroscópio</li>
+            <li>🖥️ OLED — display</li>
+            <li>📡 RFID RC522 — leitura de cartões</li>
+        </ul>
+        """
+    ),
+
+    (
+        "atuadores",
+        "O projeto precisa controlar algum atuador?",
+        "Ex: acender um LED, tocar um buzzer, mover um servo motor ou acionar um relé.",
+        """
+        <p>Atuadores são componentes responsáveis por executar ações físicas no projeto.</p>
+        <p>Exemplos:</p>
+        <ul>
+            <li>💡 LED — sinalização luminosa</li>
+            <li>🔊 Buzzer — alerta sonoro</li>
+            <li>⚙️ Servo motor — movimentação controlada</li>
+            <li>🔌 Relé — acionamento de equipamentos elétricos</li>
+            <li>🌀 Motor DC — rotação contínua</li>
+        </ul>
+        """
+    ),
+
+    (
+        "pinos",
+        "Você já definiu quais pinos do ESP32 serão utilizados para conectar cada componente?",
+        "Ex: DHT11 no GPIO 4, LED no GPIO 2. Caso contrário, eles poderão ser definidos automaticamente.",
+        """
+        <p>Cada componente precisa ser conectado a um ou mais pinos do ESP32.</p>
+        <p>Caso você já saiba quais utilizar, informe-os.</p>
+        <p>Se não souber, os pinos poderão ser definidos automaticamente durante a geração do código.</p>
+        """
+    ),
+
+    (
+        "wifi",
+        "O projeto utilizará Wi-Fi?",
+        "Ex: para enviar dados para um servidor, receber comandos. Se sim, informe também o SSID (nome da rede) e a senha.",
+        """
+        <p>O Wi-Fi permite conectar o ESP32 à internet ou à rede local.</p>
+        <p>Pode ser utilizado para:</p>
+        <ul>
+            <li>enviar dados para um servidor;</li>
+            <li>acessar APIs;</li>
+            <li>controlar o dispositivo por um aplicativo;</li>
+            <li>criar uma página web.</li>
+        </ul>
+        <p>Caso utilize uma rede Wi-Fi, informe também:</p>
+        <ul>
+            <li>SSID (nome da rede);</li>
+            <li>senha.</li>
+        </ul>
+        """
+    ),
+
+    (
+        "bt",
+        "O projeto utilizará Bluetooth?",
+        "Ex: para comunicação com celular ou outros microcontroladores.",
+        """
+        <p>O Bluetooth permite a comunicação sem fio entre o ESP32 e dispositivos próximos.</p>
+        <p>Pode ser utilizado para:</p>
+        <ul>
+            <li>comunicação com celulares;</li>
+            <li>troca de dados;</li>
+            <li>envio de comandos;</li>
+            <li>configuração do dispositivo.</li>
+        </ul>
+        """
+    ),
+
+    (
+        "remoto",
+        "O projeto precisa enviar ou receber dados remotamente?",
+        "Ex: API REST, broker MQTT, Firebase ou ThingSpeak.",
+        """
+        <p>Permite que o ESP32 troque informações pela internet.</p>
+        <p>Algumas tecnologias comuns são:</p>
+        <ul>
+            <li>☁️ MQTT — protocolo leve para IoT.</li>
+            <li>🔥 Firebase — banco de dados em tempo real.</li>
+            <li>📊 ThingSpeak — monitoramento de sensores.</li>
+            <li>🌐 API REST — comunicação com aplicações web.</li>
+        </ul>
+        """
+    ),
+
+    (
+        "logica",
+        "Como o sistema deve reagir às leituras dos sensores ou aos eventos?",
+        "Ex: acender um LED quando a temperatura ultrapassar 30 °C ou tocar um buzzer quando um objeto estiver a menos de 10 cm.",
+        """
+        <p>Descreva o que deve acontecer quando alguma condição for atendida.</p>
+        <p>Exemplos:</p>
+        <ul>
+            <li>Acender um LED quando detectar movimento.</li>
+            <li>Tocar um buzzer quando a distância for menor que 10 cm.</li>
+            <li>Enviar uma mensagem quando a temperatura ultrapassar um limite.</li>
+            <li>Desligar um motor após determinado tempo.</li>
+        </ul>
+        """
+    ),
+
+    (
+        "armazenamento",
+        "O projeto precisa armazenar informações para uso posterior?",
+        "Ex: na memória do ESP32 (EEPROM), em um cartão SD ou em um servidor na internet.",
+        """
+        <p>Os dados podem ser armazenados em diferentes locais.</p>
+        <ul>
+            <li>💾 EEPROM — guarda pequenas informações no próprio ESP32.</li>
+            <li>📁 Cartão SD — armazena arquivos e históricos de medições.</li>
+            <li>☁️ Servidor na internet — permite visualizar ou acessar os dados remotamente por um site ou aplicativo.</li>
+        </ul>
+        <p>Caso utilize um servidor, informe qual serviço será utilizado, se já estiver definido.</p>
+        """
+    ),
+
+    (
+        "frequencia",
+        "Com que frequência o ESP32 deve executar as leituras ou ações?",
+        "Ex: a cada 500 ms, 1 segundo ou 5 minutos, ou descreva quando a ação deve ocorrer.",
+        """
+        <p>Informe quando o ESP32 deverá realizar suas tarefas.</p>
+        <p>Exemplos:</p>
+        <ul>
+            <li>a cada 500 ms;</li>
+            <li>a cada 1 segundo;</li>
+            <li>a cada 5 minutos;</li>
+            <li>somente quando um sensor detectar um evento.</li>
+        </ul>
+        """
+    ),
+
+    (
+        "visualizacao",
+        "Como os dados do projeto serão visualizados?",
+        "Ex: no Monitor Serial, em um display (OLED/LCD), em uma página web, aplicativo ou painel de monitoramento.",
+        """
+        <p>Os dados gerados pelo ESP32 podem ser exibidos de diversas formas.</p>
+        <p>Exemplos:</p>
+        <ul>
+            <li>💻 Monitor Serial da IDE Arduino.</li>
+            <li>🖥️ Display OLED.</li>
+            <li>📟 Display LCD.</li>
+            <li>🌐 Página Web.</li>
+            <li>📱 Aplicativo para celular.</li>
+            <li>📊 Dashboard online.</li>
+        </ul>
+        """
+    ),
 ]
 
 def _ensure_state(request: HttpRequest):
@@ -58,7 +227,7 @@ def agent_next(request: HttpRequest) -> JsonResponse:
     answers = request.session["answers"]
 
     if answer and idx < len(INTERVIEW_STEPS):
-        key, _ = INTERVIEW_STEPS[idx]
+        key, _, _, _ = INTERVIEW_STEPS[idx] # Ajustado para pegar apenas a chave
         answers[key] = answer
         request.session["answers"] = answers
         idx += 1
@@ -66,8 +235,15 @@ def agent_next(request: HttpRequest) -> JsonResponse:
         request.session.modified = True
 
     if idx < len(INTERVIEW_STEPS):
-        _, question = INTERVIEW_STEPS[idx]
-        return JsonResponse({"done": False, "question": question, "step": idx+1, "total": len(INTERVIEW_STEPS)})
+        _, question, placeholder_example, help_text = INTERVIEW_STEPS[idx] # Pega a pergunta, o exemplo e o help text
+        return JsonResponse({
+            "done": False,
+            "question": question,
+            "placeholder_example": placeholder_example, # Novo campo
+            "help_text": help_text, # Novo campo
+            "step": idx+1,
+            "total": len(INTERVIEW_STEPS)
+        })
 
     briefing = _compose_briefing(answers)
     code, feedback = generate_esp32_code(briefing)

@@ -11,7 +11,7 @@ async function postJSON(url, data) {
 }
 
 // Function to display messages in the chat interface
-function displayMessage(sender, text) {
+function displayMessage(sender, text) { // Removed helpText parameter
   const chatMessages = $("chat-messages");
   if (!chatMessages) {
     console.warn("Element with ID 'chat-messages' not found.");
@@ -58,18 +58,47 @@ function displayMessage(sender, text) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+// Function to update the help card content
+function updateHelpCard(helpHtml) {
+    const helpCardContainer = $("help-card-container");
+    if (!helpCardContainer) {
+        console.warn("Element with ID 'help-card-container' not found.");
+        return;
+    }
+
+    if (helpHtml && helpHtml.trim() !== "") {
+        helpCardContainer.innerHTML = `
+            <div class="help-card text-left">
+                <div class="help-header">
+                    <span class="icon">💡</span>
+                    <span class="title">Ajuda</span>
+                </div>
+                ${helpHtml}
+            </div>
+        `;
+        helpCardContainer.classList.remove('hidden'); // Show the help card
+    } else {
+        helpCardContainer.innerHTML = ""; // Clear content
+        helpCardContainer.classList.add('hidden'); // Hide the help card
+    }
+}
+
+
 // ===== Conversa =====
 async function startInterview(){
   try{
-    // zera e pede a 1ª pergunta
+    // zera o estado da conversa no backend
     await postJSON("/api/agent/reset");
-    const r = await postJSON("/api/agent/next", {}); // sem answer => 1ª pergunta
+
+    // Fetch the first question and its help text
+    const r = await postJSON("/api/agent/next", {}); // Request the first question
     if (!r.done) {
       displayMessage('ai', r.question);
+      updateHelpCard(r.help_text); // Update help card with the first question's help text
     }
   }catch(e){
+    console.error("Erro ao iniciar conversa: " + e.message);
     displayMessage('ai', "Erro ao iniciar conversa: " + e.message);
-    console.error(e);
   }
 }
 
@@ -89,9 +118,11 @@ async function onGenerateClick(){
     if (r.done){
       displayMessage('ai', r.feedback || "OK");
       codeEl.textContent = r.code || "";
+      updateHelpCard(null); // Clear and hide help card when done
     }else{
       // próximo passo
       displayMessage('ai', r.question);
+      updateHelpCard(r.help_text); // Update help card with new question's help text
     }
   }catch(e){
     displayMessage('ai', "Erro: " + e.message);
@@ -208,5 +239,6 @@ window.addEventListener("DOMContentLoaded", () => {
       applyTheme('dark');
   }
 
+  // Initial call to start the interview and display the first question/help
   startInterview();
 });

@@ -3,7 +3,7 @@ from django.conf import settings
 from pathlib import Path
 # Descobre BASE_DIR de forma segura
 try:
-    PROJECT_ROOT = settings.BASE_DIR.parent
+    PROJECT_ROOT = settings.BASE_DIR
 except Exception:
     PROJECT_ROOT = Path(os.path.abspath(__file__)).parent.parent.parent
 
@@ -36,6 +36,7 @@ def generate_esp32_code(prompt: str) -> tuple[str, str]:
     """
     Gera (code, feedback) usando OpenAI se houver chave; caso contrário, usa fallback local.
     """
+    print("INFO: Iniciando a geração de código ESP32...")
     api_key = getattr(settings, "OPENAI_API_KEY", "") or os.getenv("OPENAI_API_KEY", "")
     model = getattr(settings, "MODEL_NAME", "gpt-4o-mini")
     system = _load_system_prompt()
@@ -52,6 +53,15 @@ def generate_esp32_code(prompt: str) -> tuple[str, str]:
                 "retornar APENAS o código (sem markdown)."
             )
 
+            # --- Adicionado para depuração ---
+            print("\n--- Conteúdo enviado para a API do OpenAI ---")
+            print("System Prompt:")
+            print(system)
+            print("\nUser Content:")
+            print(user_content)
+            print("---------------------------------------------\n")
+            # ----------------------------------
+
             rsp = client.responses.create(
                 model=model,
                 input=[
@@ -61,7 +71,7 @@ def generate_esp32_code(prompt: str) -> tuple[str, str]:
                 temperature=0.2,
             )
             text = rsp.output_text
-            return text.strip(), "Código gerado com OpenAI."
+            return text.strip(), "Código gerado com sucesso."
         except Exception as e:
             return _fallback_generator(prompt), f"Fallback local (erro ao chamar modelo): {e}"
 

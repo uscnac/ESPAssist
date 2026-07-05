@@ -189,3 +189,52 @@ footer p{ font-size: .95rem; }
 
 /* Acessibilidade leve */
 :focus-visible{ outline: 3px solid color-mix(in srgb, var(--brand-2) 60%, transparent); outline-offset: 2px; }
+
+/* Help Component (Post-it style) */
+.help-card {
+    background: #FFF8DC; /* Bege/creme claro */
+    border: 1px solid #E6D8A8; /* Dourado claro */
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+    padding: 16px;
+    margin-top: 16px; /* Espaçamento superior */
+    color: #2b2b2b; /* Texto escuro para boa legibilidade */
+}
+
+.help-card .help-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.help-card .help-header .icon {
+    font-size: 1.2em;
+    color: #E6D8A8; /* Cor do ícone */
+}
+
+.help-card .help-header .title {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.help-card p {
+    font-size: 0.9em;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.help-card p:last-child {
+    margin-bottom: 0;
+}
+
+.help-card ul {
+    list-style: disc inside;
+    padding-left: 10px;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.help-card ul li {
+    margin-bottom: 4px;
+}

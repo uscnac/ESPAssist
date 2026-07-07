@@ -34,9 +34,6 @@ Projeto/
 ├── db.sqlite3                # Banco de dados SQLite (padrão do Django)
 ├── prompts/                  
 │   └── esp32_agent.md        # Prompt do sistema para o agente ESP32
-├── static/                   # Arquivos estáticos globais (CSS, JavaScript)
-│   ├── index.css             
-│   └── script.js             # Lógica JavaScript do frontend
 ├── templates/                
 │   └── index.html            # Página principal da aplicação
 └── README.md                 # Este arquivo
@@ -154,6 +151,8 @@ O frontend é uma Single Page Application (SPA) construída com:
     ```
 
 2.  Abra seu navegador e acesse `http://127.0.0.1:8000/`.
+
+Confira como o site ficou em: `https://espassist.onrender.com/`
 
 ## Observações
 
